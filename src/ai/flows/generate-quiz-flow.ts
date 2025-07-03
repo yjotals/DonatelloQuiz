@@ -20,6 +20,7 @@ const prompt = ai.definePrompt({
   output: { schema: GenerateQuizOutputSchema },
   prompt: `You are an expert art historian specializing in the Italian Renaissance.
 Your task is to create a quiz in Brazilian Portuguese about {{topic}}.
+Base your questions and feedback on well-established, verifiable historical facts.
 The quiz must have a difficulty level of '{{difficulty}}'. Adjust the complexity of the questions accordingly.
 - 'Fácil' questions should be about general knowledge, famous works, and basic facts.
 - 'Médio' questions should cover more specific details, lesser-known works, and technical terms.
