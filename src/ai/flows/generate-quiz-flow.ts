@@ -7,17 +7,27 @@
  */
 
 import { ai } from '@/ai/genkit';
-import { GenerateQuizInput, GenerateQuizInputSchema, GenerateQuizOutput, GenerateQuizOutputSchema, Question } from '@/lib/types';
+import { GenerateQuizInput, GenerateQuizInputSchema, GenerateQuizOutput, GenerateQuizOutputSchema, Question, QuestionSchema } from '@/lib/types';
+import { z } from 'zod';
 
 
 export async function generateQuiz(input: GenerateQuizInput): Promise<GenerateQuizOutput> {
   return generateQuizFlow(input);
 }
 
+// Define a schema for the initial text generation that omits the imageUrl,
+// to prevent the model from hallucinating a URL. The imageUrl will be added later
+// during the image generation step.
+const QuestionGenerationSchema = QuestionSchema.omit({ imageUrl: true });
+const GenerateQuizForGenerationOutputSchema = z.object({
+  questions: z.array(QuestionGenerationSchema),
+});
+
+
 const prompt = ai.definePrompt({
   name: 'generateQuizPrompt',
   input: { schema: GenerateQuizInputSchema },
-  output: { schema: GenerateQuizOutputSchema },
+  output: { schema: GenerateQuizForGenerationOutputSchema },
   prompt: `You are an expert art historian specializing in the Italian Renaissance.
 Your task is to create a quiz in Brazilian Portuguese about {{topic}}.
 Base your questions and feedback on well-established, verifiable historical facts.
