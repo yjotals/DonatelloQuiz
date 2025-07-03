@@ -1,12 +1,14 @@
+
 'use client'
 
 import { useState } from 'react'
-import type { Question } from '@/lib/questions'
+import type { Question } from '@/lib/types'
 import QuizCard from '@/components/quiz-card'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow'
 import { Loader2 } from 'lucide-react'
+import { useToast } from '@/hooks/use-toast'
 
 type GameState = 'not_started' | 'loading' | 'playing' | 'finished'
 
@@ -16,6 +18,7 @@ export default function Home() {
   const [score, setScore] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [gameState, setGameState] = useState<GameState>('not_started')
+  const { toast } = useToast()
 
   const currentQuestion = gameState === 'playing' ? questions[currentQuestionIndex] : null
 
@@ -30,6 +33,11 @@ export default function Home() {
       setGameState('playing')
     } catch (error) {
       console.error("Failed to generate quiz:", error)
+      toast({
+        variant: 'destructive',
+        title: 'Erro ao gerar o quiz',
+        description: 'Não foi possível criar as perguntas. Por favor, tente novamente.',
+      })
       setGameState('not_started')
     }
   }

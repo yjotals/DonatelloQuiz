@@ -1,7 +1,9 @@
+
 'use client'
 
+import Image from 'next/image'
 import { cn } from '@/lib/utils'
-import type { Question } from '@/lib/questions'
+import type { Question } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
@@ -12,7 +14,7 @@ interface QuizCardProps {
 }
 
 export default function QuizCard({ questionData, onAnswer, selectedAnswer }: QuizCardProps) {
-  const { question, options, correctAnswer } = questionData
+  const { question, options, correctAnswer, imageUrl } = questionData
 
   const getButtonClass = (option: string) => {
     if (!selectedAnswer) {
@@ -34,7 +36,19 @@ export default function QuizCard({ questionData, onAnswer, selectedAnswer }: Qui
   }
 
   return (
-    <Card className="shadow-lg animate-in fade-in duration-500">
+    <Card className="shadow-lg animate-in fade-in duration-500 overflow-hidden">
+      {imageUrl && (
+        <div className="relative aspect-video w-full">
+           <Image
+              src={imageUrl}
+              alt={`Imagem para a pergunta: ${question}`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 672px"
+              priority={true}
+           />
+        </div>
+      )}
       <CardHeader>
         <CardTitle className="text-xl md:text-2xl leading-relaxed font-body">{question}</CardTitle>
       </CardHeader>

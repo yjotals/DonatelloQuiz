@@ -1,31 +1,14 @@
+
 'use server';
 /**
  * @fileOverview A flow for generating quiz questions about a specific topic.
  *
  * - generateQuiz - A function that generates a set of quiz questions.
- * - GenerateQuizInput - The input type for the generateQuiz function.
- * - GenerateQuizOutput - The return type for the generateQuiz function.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
+import { GenerateQuizInput, GenerateQuizInputSchema, GenerateQuizOutput, GenerateQuizOutputSchema, Question } from '@/lib/types';
 
-const QuestionSchema = z.object({
-  question: z.string().describe('The quiz question.'),
-  options: z.array(z.string()).length(4).describe('A list of 4 possible answers, including the correct one.'),
-  correctAnswer: z.string().describe('The correct answer from the options list.'),
-});
-
-const GenerateQuizInputSchema = z.object({
-  topic: z.string().describe('The topic for the quiz questions, e.g., "Donatello".'),
-  count: z.number().int().positive().describe('The number of questions to generate.'),
-});
-export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
-
-const GenerateQuizOutputSchema = z.object({
-  questions: z.array(QuestionSchema),
-});
-export type GenerateQuizOutput = z.infer<typeof GenerateQuizOutputSchema>;
 
 export async function generateQuiz(input: GenerateQuizInput): Promise<GenerateQuizOutput> {
   return generateQuizFlow(input);
@@ -41,6 +24,7 @@ Generate exactly {{count}} multiple-choice questions.
 Each question must have exactly 4 options.
 One of the options must be the correct answer.
 Ensure the questions cover a range of topics including biography, major works, techniques, and influence.
+For about a third of the questions, especially those about a specific, famous artwork, provide a short subject for an image generation prompt in the 'imageSubject' field. For example: "Statue of David", "Gattamelata equestrian statue", "Penitent Magdalene". Do not provide an imageSubject for biographical or technical questions.
 Return the questions in the specified JSON format.
 `,
 });
@@ -56,6 +40,30 @@ const generateQuizFlow = ai.defineFlow(
     if (!output) {
       throw new Error("AI failed to generate quiz questions.");
     }
-    return output;
+    
+    const imageGenerationPromises = output.questions.map(async (question): Promise<Question> => {
+      if (question.imageSubject) {
+        try {
+          const { media } = await ai.generate({
+            model: 'googleai/gemini-2.0-flash-preview-image-generation',
+            prompt: `A dramatic, Renaissance-style oil painting of: ${question.imageSubject}`,
+            config: {
+              responseModalities: ['TEXT', 'IMAGE'],
+            },
+          });
+          if (media?.url) {
+            return { ...question, imageUrl: media.url };
+          }
+        } catch (e) {
+          console.error(`Failed to generate image for subject: ${question.imageSubject}`, e);
+          // Fail gracefully, the question will just not have an image.
+        }
+      }
+      return question;
+    });
+
+    const questionsWithImages = await Promise.all(imageGenerationPromises);
+
+    return { questions: questionsWithImages };
   }
 );
