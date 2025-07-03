@@ -23,6 +23,7 @@ Your task is to create a quiz in Brazilian Portuguese about {{topic}}.
 Generate exactly {{count}} multiple-choice questions.
 Each question must have exactly 4 options.
 One of the options must be the correct answer.
+For each question, provide a short, interesting fact or explanation in the 'feedback' field. This will be shown to the user after they answer to provide more context.
 Ensure the questions cover a range of topics including biography, major works, techniques, and influence.
 For about a third of the questions, especially those about a specific, famous artwork, provide a short subject for an image generation prompt in the 'imageSubject' field. For example: "Statue of David", "Gattamelata equestrian statue", "Penitent Magdalene". Do not provide an imageSubject for biographical or technical questions.
 Return the questions in the specified JSON format.

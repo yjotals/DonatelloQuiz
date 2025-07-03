@@ -58,7 +58,7 @@ export default function Home() {
       } else {
         setGameState('finished')
       }
-    }, 2000)
+    }, 6000)
   }
 
   const handlePlayAgain = () => {

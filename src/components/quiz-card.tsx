@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils'
 import type { Question } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Lightbulb } from 'lucide-react'
 
 interface QuizCardProps {
   questionData: Question;
@@ -14,7 +16,7 @@ interface QuizCardProps {
 }
 
 export default function QuizCard({ questionData, onAnswer, selectedAnswer }: QuizCardProps) {
-  const { question, options, correctAnswer, imageUrl } = questionData
+  const { question, options, correctAnswer, imageUrl, feedback } = questionData
 
   const getButtonClass = (option: string) => {
     if (!selectedAnswer) {
@@ -52,7 +54,7 @@ export default function QuizCard({ questionData, onAnswer, selectedAnswer }: Qui
       <CardHeader>
         <CardTitle className="text-xl md:text-2xl leading-relaxed font-body">{question}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-6">
         <div className="grid grid-cols-1 gap-4">
           {options.map((option, index) => (
             <Button
@@ -68,6 +70,17 @@ export default function QuizCard({ questionData, onAnswer, selectedAnswer }: Qui
             </Button>
           ))}
         </div>
+        
+        {selectedAnswer && feedback && (
+          <Alert className="bg-accent/10 border-accent/30 animate-in fade-in-50 slide-in-from-bottom-5 duration-500">
+            <Lightbulb className="h-4 w-4 text-accent" />
+            <AlertTitle className="font-headline text-accent">Fato Curioso</AlertTitle>
+            <AlertDescription className="text-foreground/90">
+              {feedback}
+            </AlertDescription>
+          </Alert>
+        )}
+
       </CardContent>
     </Card>
   )
