@@ -7,7 +7,7 @@ export const QuestionSchema = z.object({
   correctAnswer: z.string().describe('The correct answer from the options list.'),
   feedback: z.string().describe('A short, interesting fact or explanation (in Brazilian Portuguese) related to the question and its correct answer. This will be shown to the user after they answer.'),
   imageSubject: z.string().optional().describe('For questions about a specific artwork, provide a 2-3 word subject for an image generation prompt. For example, "Statue of David" or "Gattamelata equestrian statue".'),
-  imageUrl: z.string().url().optional().describe('An optional URL to an image related to the question.'),
+  imageUrl: z.string().optional().describe('An optional URL to an image related to the question.'),
 });
 
 export type Question = z.infer<typeof QuestionSchema>;
