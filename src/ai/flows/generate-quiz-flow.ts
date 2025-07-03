@@ -16,13 +16,13 @@ const QuestionSchema = z.object({
   correctAnswer: z.string().describe('The correct answer from the options list.'),
 });
 
-export const GenerateQuizInputSchema = z.object({
+const GenerateQuizInputSchema = z.object({
   topic: z.string().describe('The topic for the quiz questions, e.g., "Donatello".'),
   count: z.number().int().positive().describe('The number of questions to generate.'),
 });
 export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
 
-export const GenerateQuizOutputSchema = z.object({
+const GenerateQuizOutputSchema = z.object({
   questions: z.array(QuestionSchema),
 });
 export type GenerateQuizOutput = z.infer<typeof GenerateQuizOutputSchema>;
