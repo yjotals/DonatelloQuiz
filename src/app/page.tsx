@@ -9,8 +9,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { generateQuiz } from '@/ai/flows/generate-quiz-flow'
 import { Loader2 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
+import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import type { GenerateQuizInput } from '@/lib/types'
 
 type GameState = 'not_started' | 'loading' | 'playing' | 'finished'
+type Difficulty = GenerateQuizInput['difficulty'];
 
 export default function Home() {
   const [questions, setQuestions] = useState<Question[]>([])
@@ -18,6 +22,7 @@ export default function Home() {
   const [score, setScore] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [gameState, setGameState] = useState<GameState>('not_started')
+  const [difficulty, setDifficulty] = useState<Difficulty>('Médio');
   const { toast } = useToast()
 
   const currentQuestion = gameState === 'playing' ? questions[currentQuestionIndex] : null
@@ -25,7 +30,7 @@ export default function Home() {
   const startGame = async () => {
     setGameState('loading')
     try {
-      const { questions: newQuestions } = await generateQuiz({ topic: 'Donatello', count: 12 })
+      const { questions: newQuestions } = await generateQuiz({ topic: 'Donatello', count: 12, difficulty })
       setQuestions(newQuestions)
       setCurrentQuestionIndex(0)
       setScore(0)
@@ -82,6 +87,23 @@ export default function Home() {
 
         <Card className="w-full max-w-md mt-8 text-center shadow-2xl">
           <CardContent className="p-6">
+             <div className="mb-6">
+              <Label className="mb-4 block text-lg font-medium text-foreground">Escolha a Dificuldade</Label>
+              <RadioGroup value={difficulty} onValueChange={(value: Difficulty) => setDifficulty(value)} className="flex justify-center gap-2 md:gap-4">
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Fácil" id="r1" />
+                    <Label htmlFor="r1" className="cursor-pointer">Fácil</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Médio" id="r2" />
+                    <Label htmlFor="r2" className="cursor-pointer">Médio</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="Difícil" id="r3" />
+                    <Label htmlFor="r3" className="cursor-pointer">Difícil</Label>
+                  </div>
+              </RadioGroup>
+            </div>
             <Button onClick={startGame} disabled={gameState === 'loading'} className="w-full" size="lg">
               {gameState === 'loading' ? (
                 <>

@@ -20,11 +20,16 @@ const prompt = ai.definePrompt({
   output: { schema: GenerateQuizOutputSchema },
   prompt: `You are an expert art historian specializing in the Italian Renaissance.
 Your task is to create a quiz in Brazilian Portuguese about {{topic}}.
+The quiz must have a difficulty level of '{{difficulty}}'. Adjust the complexity of the questions accordingly.
+- 'Fácil' questions should be about general knowledge, famous works, and basic facts.
+- 'Médio' questions should cover more specific details, lesser-known works, and technical terms.
+- 'Difícil' questions should be for experts, covering obscure facts, influence on other artists, and specific historical context.
+
 Generate exactly {{count}} multiple-choice questions.
 Each question must have exactly 4 options.
 One of the options must be the correct answer.
 For each question, provide a short, interesting fact or explanation in the 'feedback' field. This will be shown to the user after they answer to provide more context.
-Ensure the questions cover a range of topics including biography, major works, techniques, and influence.
+Ensure the questions cover a range of topics including biography, major works, techniques, and influence, according to the chosen difficulty.
 For about a third of the questions, especially those about a specific, famous artwork, provide a short subject for an image generation prompt in the 'imageSubject' field. For example: "Statue of David", "Gattamelata equestrian statue", "Penitent Magdalene". Do not provide an imageSubject for biographical or technical questions.
 Return the questions in the specified JSON format.
 `,

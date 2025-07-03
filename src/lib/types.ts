@@ -15,6 +15,7 @@ export type Question = z.infer<typeof QuestionSchema>;
 export const GenerateQuizInputSchema = z.object({
   topic: z.string().describe('The topic for the quiz questions, e.g., "Donatello".'),
   count: z.number().int().positive().describe('The number of questions to generate.'),
+  difficulty: z.enum(['Fácil', 'Médio', 'Difícil']).describe('The difficulty level for the quiz questions.'),
 });
 export type GenerateQuizInput = z.infer<typeof GenerateQuizInputSchema>;
 
