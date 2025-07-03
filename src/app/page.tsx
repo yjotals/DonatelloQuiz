@@ -11,6 +11,7 @@ export default function Home() {
   const [score, setScore] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
   const [isFinished, setIsFinished] = useState(false)
+  const [isStarted, setIsStarted] = useState(false)
 
   const currentQuestion = questions[currentQuestionIndex]
 
@@ -38,6 +39,25 @@ export default function Home() {
     setScore(0)
     setSelectedAnswer(null)
     setIsFinished(false)
+  }
+
+  if (!isStarted) {
+    return (
+      <main className="flex min-h-screen flex-col items-center justify-center bg-background p-4 sm:p-8 md:p-12">
+        <div className="text-center">
+            <h1 className="font-headline text-5xl md:text-6xl font-bold text-accent">Donatello Quiz</h1>
+            <p className="mt-4 text-lg md:text-xl text-muted-foreground">Teste seus conhecimentos sobre o mestre renascentista.</p>
+        </div>
+
+        <Card className="w-full max-w-md mt-8 text-center shadow-2xl">
+          <CardContent className="p-6">
+            <Button onClick={() => setIsStarted(true)} className="w-full" size="lg">
+              Começar o Jogo
+            </Button>
+          </CardContent>
+        </Card>
+      </main>
+    )
   }
 
   if (isFinished) {
